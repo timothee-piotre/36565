@@ -18,7 +18,24 @@
             <input type="email" id="email" required>
             <label for="password">Mot de passe:</label>
             <input type="password" id="password" required>
-            <button type="submit" href="authController.js.html">S'inscrire</button>
+            <button type="submit" href="authController.js.html">
+                <script>exports.register = async (req, res) => {
+                            const { username, email, password } = req.body;
+
+                            try {
+                                const user = await User.create({ username, email, password });
+                                res.status(201).json({
+                                    id: user.id,
+                                    username: user.username,
+                                    email: user.email,
+                                    token: generateToken(user.id),
+                                });
+                            } catch (error) {
+                                    res.status(400).json({ message: 'User could not be created', error: error.message });
+                            } 
+                        };
+                </script>
+            S'inscrire</button>
             <p>Déjà inscrit? <a href="index.html">Se connecter</a></p>
         </form>
     </main>
