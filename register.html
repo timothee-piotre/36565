@@ -12,16 +12,16 @@
     </header>
     <main>
         <form id="register-form">
+            <script src="authControllerR.js"></script>
             <label for="username">Nom d'utilisateur:</label>
             <input type="text" id="username" required>
             <label for="email">Email:</label>
             <input type="email" id="email" required>
             <label for="password">Mot de passe:</label>
             <input type="password" id="password" required>
-            <a href="authController(register).js"><button>S'inscrire</button></a>
+            <button onclick=register()>S'inscrire</button>
             <p>Déjà inscrit? <a href="index.html">Se connecter</a></p>
         </form>
     </main>
-    <script src="js/script.js"></script>
 </body>
 </html>
