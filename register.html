@@ -1,30 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        function register(){
-            exports.register = async (req, res) => {
-                const { username, email, password } = req.body;
+        async function register(event) {
+            event.preventDefault(); // Empêche le rechargement de la page lors de la soumission du formulaire
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-                try {
-                    const user = await User.create({ username, email, password });
-                    res.status(201).json({
-                        id: user.id,
-                        username: user.username,
-                        email: user.email,
-                        token: generateToken(user.id),
-                        alert("inscription effectué avec succes");
-                    });
-                } catch (error) {
-                    res.status(400).json({ message: 'User could not be created', error: error.message });
-                    alert("une erreur est survenue");
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                });
+
+                if (response.ok) {
+                    alert("Inscription effectuée avec succès");
+                    window.location.href = 'index.html'; // Redirige vers la page de connexion
+                } else {
+                    const errorData = await response.json();
+                    alert("Une erreur est survenue: " + errorData.message);
                 }
+            } catch (error) {
+                alert("Une erreur est survenue: " + error.message);
             }
-        };
+        }
     </script>
 </head>
 <body>
@@ -32,16 +40,17 @@
         <h1>Inscription</h1>
     </header>
     <main>
-        <form id="register-form">
+        <form id="register-form" onsubmit="register(event)">
             <label for="username">Nom d'utilisateur:</label>
             <input type="text" id="username" required>
             <label for="email">Email:</label>
             <input type="email" id="email" required>
             <label for="password">Mot de passe:</label>
             <input type="password" id="password" required>
-            <button onclick=register()>S'inscrire</button>
+            <button type="submit">S'inscrire</button>
             <p>Déjà inscrit? <a href="index.html">Se connecter</a></p>
         </form>
     </main>
 </body>
 </html>
+
