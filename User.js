@@ -1,44 +1,48 @@
-const { DataTypes } = require('sequelize');
-const bcrypt = require('bcryptjs');
-const { sequelize } = require('../config/db');
+// server.js ou app.js
 
-const User = sequelize.define('User', {
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    points: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
+const express = require('express');
+const { sequelize } = require('./config/db');
+const User = require('./models/User'); // Assurez-vous que le chemin est correct
+
+const app = express();
+
+// Middleware pour analyser le corps des requêtes JSON
+app.use(express.json());
+
+// Route d'inscription
+app.post('/api/register', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    try {
+        // Vérifier si l'utilisateur existe déjà
+        let user = await User.findOne({ where: { email } });
+        if (user) {
+            return res.status(400).json({ message: 'Utilisateur déjà enregistré' });
+        }
+
+        // Créer un nouvel utilisateur
+        user = await User.create({ username, email, password });
+
+        res.status(201).json({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            points: user.points,
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Erreur du serveur' });
+    }
 });
 
-// Hachage du mot de passe avant la création de l'utilisateur
-User.beforeCreate(async (user) => {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+// Synchronisation avec la base de données et démarrage du serveur
+sequelize.sync({ force: false }).then(() => {
+    app.listen(3000, () => {
+        console.log('Server running on port 3000');
+    });
+}).catch(err => {
+    console.error('Impossible de se connecter à la base de données:', err);
 });
 
-User.prototype.matchPassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
-};
+module.exports = app;
 
-module.exports = User;
