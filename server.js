@@ -1,8 +1,8 @@
 // server.js ou app.js
 
 const express = require('express');
-const { sequelize } = require('./config/db');
-const User = require('./models/User'); // Assurez-vous que le chemin est correct
+const { sequelize } = require('db.js');
+const User = require('User.js'); // Assurez-vous que le chemin est correct
 
 const app = express();
 
