@@ -1,4 +1,4 @@
-// server.js ou app.js
+
 
 const express = require('express');
 const { sequelize } = require('db.js');
