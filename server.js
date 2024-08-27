@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 
 // Route d'inscription
-app.post('/api/register', async (req, res) => {
+app.post('register.js', async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
