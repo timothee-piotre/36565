@@ -16,9 +16,11 @@ function register(){
                 username: user.username,
                 email: user.email,
                 token: generateToken(user.id),
+                alert("inscription effectué avec succes");
             });
         } catch (error) {
             res.status(400).json({ message: 'User could not be created', error: error.message });
+            alert("une erreur est survenue");
         }
     }
 };
