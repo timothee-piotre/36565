@@ -28,6 +28,7 @@ app.post('register.js', async (req, res) => {
             username: user.username,
             email: user.email,
             points: user.points,
+        alert("inscription effectuée!")
         });
     } catch (error) {
         console.error(error.message);
